@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:f1bc817e10df61923b49@iatech.space:3306/resort"
+}
+
+model Usuario {
+  id             Int              @id @default(autoincrement())
+  nome           String
+  email          String           @unique
+  senha          String
+  permissao      String           // "admin", "recepcionista", "camareira", "passadeira", "lavanderia", "supervisor_camareira", "supervisor_passadeira", "supervisor_lavanderia"
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  tarefas        Tarefa[]         @relation("ResponsavelTarefa")
+  avaliacoes     Avaliacao[]      @relation("SupervisorAvaliacao")
+  funcionario    Funcionario?
+}
+
+model Funcionario {
+  id          Int       @id @default(autoincrement())
+  usuarioId   Int       @unique
+  foto        String?
+  cargo       String    // "camareira", "passadeira", "lavanderia"
+  ativo       Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+}
+
+model Cliente {
+  id        Int             @id @default(autoincrement())
+  nome      String
+  cpf       String          @unique
+  email     String?
+  telefone  String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  quartos   QuartoCliente[]
+}
+
+model Quarto {
+  id        Int             @id @default(autoincrement())
+  numero    Int             @unique
+  andar     Int             @default(1)
+  tipo      String
+  status    String          @default("disponivel")
+  cliente   String?         // Nome do cliente ocupante atual (para exibição rápida)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  ocupacoes QuartoCliente[]
+  tarefas   Tarefa[]
+  celulares QuartoCelular[] // Relação recíproca para QuartoCelular
+}
+
+model QuartoCliente {
+  id        Int             @id @default(autoincrement())
+  checkin   DateTime
+  checkout  DateTime
+  clienteId Int
+  quartoId  Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  celulares QuartoCelular[]
+  cliente   Cliente         @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  quarto    Quarto          @relation(fields: [quartoId], references: [id], onDelete: Cascade)
+
+  @@index([clienteId], map: "QuartoCliente_clienteId_fkey")
+  @@index([quartoId], map: "QuartoCliente_quartoId_fkey")
+}
+
+model QuartoCelular {
+  id              Int           @id @default(autoincrement())
+  nome            String
+  celular         String
+  quartoClienteId Int
+  quartoId        Int?          // Campo adicionado como opcional para compatibilidade com registros existentes
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  quartoCliente   QuartoCliente @relation(fields: [quartoClienteId], references: [id], onDelete: Cascade)
+  quarto          Quarto?       @relation(fields: [quartoId], references: [id])
+
+  @@index([quartoClienteId], map: "QuartoCelular_quartoClienteId_fkey")
+  @@index([quartoId], map: "QuartoCelular_quartoId_fkey")
+}
+
+model Tarefa {
+  id            Int        @id @default(autoincrement())
+  tipo          String     // "camareira", "passadeira", "lavanderia"
+  quartoId      Int
+  responsavelId Int?
+  inicio        DateTime?
+  fim           DateTime?
+  status        String     @default("pendente") // "pendente", "em_andamento", "concluida", "avaliada"
+  observacao    String?    @db.Text
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  avaliacao     Avaliacao?
+  quarto        Quarto     @relation(fields: [quartoId], references: [id], onDelete: Cascade)
+  responsavel   Usuario?   @relation("ResponsavelTarefa", fields: [responsavelId], references: [id], onDelete: SetNull)
+
+  @@index([quartoId], map: "Tarefa_quartoId_fkey")
+  @@index([responsavelId], map: "Tarefa_responsavelId_fkey")
+}
+
+model Avaliacao {
+  id           Int      @id @default(autoincrement())
+  tarefaId     Int      @unique
+  nota         Int
+  supervisorId Int
+  observacao   String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  tarefa       Tarefa   @relation(fields: [tarefaId], references: [id], onDelete: Cascade)
+  supervisor   Usuario  @relation("SupervisorAvaliacao", fields: [supervisorId], references: [id], onDelete: Cascade)
+
+  @@index([supervisorId], map: "Avaliacao_supervisorId_fkey")
+}

@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resort Manager
 
-## Getting Started
+Sistema de gerenciamento completo para resorts, com controle de quartos, hóspedes, serviços de camareira, passadeira e lavanderia.
 
-First, run the development server:
+## Recursos
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 🏨 Gerenciamento de quartos e ocupações
+- 👪 Cadastro de clientes e informações de contato
+- 🧹 Gestão de serviços de camareira
+- 👕 Controle de serviços de passadeira
+- 🧺 Administração de lavanderia
+- ⭐ Sistema de avaliação de funcionários
+- 📊 Dashboard com métricas e rankings de desempenho
+- 🔒 Sistema de autenticação e controle de permissões
+- 📱 Design responsivo para dispositivos móveis e desktop
+
+## Tecnologias
+
+- **Frontend:** Next.js 14 com App Router
+- **UI Components:** Shadcn UI
+- **Estilização:** Tailwind CSS
+- **Estado:** Zustand
+- **Database:** MySQL
+- **ORM:** Prisma
+- **Autenticação:** NextAuth.js
+
+## Instalação
+
+### Pré-requisitos
+
+- Node.js 18+ 
+- MySQL Server
+- npm ou yarn
+
+### Passos para instalação
+
+1. Clone o repositório
+   ```
+   git clone https://github.com/seu-usuario/resort-manager.git
+   cd resort-manager
+   ```
+
+2. Instale as dependências
+   ```
+   npm install
+   ```
+
+3. Configure as variáveis de ambiente
+   - Copie o arquivo `.env.example` para `.env.local`
+   - Edite as variáveis de ambiente com suas configurações
+
+4. Configure o banco de dados
+   ```
+   npx prisma db push
+   ```
+
+5. Execute o seed para popular o banco com dados iniciais
+   ```
+   npx prisma db seed
+   ```
+
+6. Inicie o servidor de desenvolvimento
+   ```
+   npm run dev
+   ```
+
+7. Acesse o sistema em `http://localhost:3000`
+
+## Funcionalidades por Perfil
+
+### Administrador
+- Acesso a todas as funcionalidades
+- Cadastro de funcionários e atribuição de permissões
+- Visualização de relatórios gerenciais
+
+### Recepcionista
+- Gerenciamento de quartos
+- Check-in e check-out de hóspedes
+- Cadastro de clientes e contatos
+
+### Camareira/Passadeira/Lavanderia
+- Visualização de tarefas pendentes
+- Gestão das próprias tarefas (início e conclusão)
+- Histórico de serviços realizados
+
+### Supervisores
+- Avaliação dos serviços concluídos
+- Atribuição de notas de 0 a 10
+- Relatórios de desempenho
+
+## Desenvolvimento
+
+### Estrutura do Projeto
+
+```
+/app                    # Páginas e rotas Next.js (App Router)
+  /api                  # Rotas de API
+  /admin                # Área administrativa
+  /dashboard            # Dashboard principal
+  /quartos              # Gerenciamento de quartos
+  /clientes             # Cadastro de clientes
+  /servicos             # Serviços operacionais
+    /camareira          # Área específica para camareiras
+    /passadeira         # Área específica para passadeiras
+    /lavanderia         # Área específica para lavanderia
+    /supervisores       # Área de supervisão de serviços
+  /auth                 # Autenticação
+
+/components             # Componentes reutilizáveis
+  /ui                   # Componentes de UI (shadcn)
+  /layout               # Componentes de layout 
+  /dashboard            # Componentes do dashboard
+
+/lib                    # Bibliotecas e utilitários
+  /generated            # Código gerado (Prisma)
+
+/prisma                 # Configuração do Prisma e schema
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Contas de Demonstração
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Email               | Senha     | Perfil        |
+|---------------------|-----------|---------------|
+| admin@resort.com    | senha123  | Administrador |
+| recepcao@resort.com | senha123  | Recepcionista |
+| maria@resort.com    | senha123  | Camareira     |
+| carla@resort.com    | senha123  | Passadeira    |
+| ricardo@resort.com  | senha123  | Lavanderia    |
+| fernanda@resort.com | senha123  | Supervisor    |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Licença
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Este projeto está licenciado sob a licença MIT.
